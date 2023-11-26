@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: blue;
+      height: 1800px; /* This height is set to allow scrolling */
+    }
+
+    #navbar {
+        position: fixed;
+        top: 0px;
+      height: 70px;
+      width: 100%;
+      background-color: yellowgreen;
+      transition: background-color 0.3s ease;
+      z-index: 1;
+    }
+    #navba {
+        position: fixed;
+        top: 0px;
+      height: 70px;
+      width: 100%;
+      background-color: rgb(50, 205, 205);
+      transition: background-color 0.3s ease;
+      display: none;
+      z-index: 1;
+    }
+    body.scrolled {
+      background-color: coral;
+     
+    }
+    /* Additional style for the scrolled state */
+    #navbar.scrolled {
+      background-color: coral;
+    }
+
+    #drag{
+        position: absolute;
+        top: 200px;
+        height: 80px;
+        width: 80px;
+        border-radius: 100%;
+        background-color: black;
+        border: none;
+        color: white;
+        font-size: 20px;
+        display: none;
+    }
+    #datedisplay{
+      height: 100px;
+      width: 200px;
+      background-color: yellowgreen;
+      margin-top: 100px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="navbar"></div>
+<div id="navba"></div>
+
+<button id="drag">Drag</button>
+<div id="datedisplay"></div>
+
+<button style="border-radius: 100%; height: 50px; width: 50px;" onclick="display()">Cam</button>
+<button style="border-radius: 100%; height: 50px; width: 50px;" id="captureButton">pic</button>
+
+<video id="cam" autoplay width="200" height="200" src=""></video>
+<canvas id="photoCanvas" width="200" height="200"></canvas>
+
+
+<script>
+  const navbar = document.getElementById('navbar');
+  const navba = document.getElementById('navba');
+
+
+const drag = document.getElementById('drag'); 
+
+
+function moveDrag(e) {
+  drag.style.left = e.pageX + 'px';   //i can make use of offSetY or offSetX to accertain position on the Dom too
+  drag.style.top = e.pageY + 'px';
+}
+
+document.body.addEventListener('mousemove', moveDrag);
+
+document.body.addEventListener('mouseenter', function() {
+  drag.style.display = 'block';
+});
+
+document.body.addEventListener('mouseleave', function() {
+  drag.style.display = 'none';
+});
+
+
+
+
+let days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+let dateDisplay = document.getElementById("datedisplay")
+let currentDate = new Date(); 
+let dayIndex = currentDate.getDay(); 
+let currentHour = currentDate.getHours()
+let currentMinute = currentDate.getMinutes()
+let currentSecond = currentDate.getSeconds()
+dateDisplay.innerHTML = (`Today is ${days[dayIndex]}, and the current time is ${currentHour}:${currentMinute}:${currentSecond}`);
+
+switch (dayIndex) {
+  case 0:
+    console.log('first day of the week');
+    break;
+  case 1:
+    console.log('second day of the week');
+    break;
+  case 2:
+    console.log('third day of the week');
+    break;
+  case 3:
+    console.log('fourth day of the week');
+    break;
+  case 4:
+    console.log('fifth day of the week');
+    break;
+  case 5:
+    console.log('sixth day of the week');
+    break;
+  case 6:
+    console.log('seventh day of the week');
+    break;
+  default:
+    console.log('not a day of the week');
+    break;
+}
+
+  
+
+
+  // const element = array[index];
+  
+  const background = document.body;
+
+
+  function changeColorOnScroll() {
+    const scrollPosition = window.scrollY;
+    if (scrollPosition > 300) {
+      background.classList.add('scrolled');
+      navbar.style.display = 'none'
+      navba.style.display = 'block'
+    } else {
+      background.classList.remove('scrolled');
+      navbar.style.display = 'block'
+      navba.style.display = 'none'
+    }
+  }
+
+  window.addEventListener('scroll', changeColorOnScroll);
+             let cam = document.getElementById("cam");
+            let captureButton = document.getElementById("captureButton");
+            let photoCanvas = document.getElementById("photoCanvas");
+            let context = photoCanvas.getContext('2d');
+ function display(params) {
+  navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{
+    cam.srcObject = stream
+   })
+   .catch(error=>{
+    alert("Error accessing camera:", error)
+   })
+
+ }
+
+  
+ captureButton.addEventListener('click', function () {
+                context.drawImage(cam, 0, 0, photoCanvas.width, photoCanvas.height);
+
+                let imageDataUrl = photoCanvas.toDataURL('image/png');
+
+                console.log('Captured photo:', imageDataUrl);
+            });
+
+  
+
+
+
+</script>
+
+</body>
+</html>
